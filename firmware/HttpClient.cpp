@@ -5,9 +5,9 @@ static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
 /**
 * Constructor.
 */
-HttpClient::HttpClient()
+HttpClient::HttpClient(Buffer *userBuffer)
 {
-
+    buffer = userBuffer;
 }
 
 /**
@@ -158,7 +158,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     #endif
 
     // clear response buffer
-    memset(&buffer[0], 0, sizeof(buffer));
+    buffer->clear();
 
 
     //
@@ -171,7 +171,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
     // The loop exits when the connection is closed, or if there is a
     // timeout or an error.
 
-    unsigned int bufferPosition = 0;
     unsigned long lastRead = millis();
     unsigned long firstRead = millis();
     bool error = false;
@@ -209,10 +208,12 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
             if (inHeaders) {
                 if ((c == '\n') && (lastChar == '\n')) {
                     // End of headers.  Grab the status code and reset the buffer.
-                    aResponse.status = atoi(&buffer[9]);
+                    const char * const ptr = buffer->getBuffer();
+                    if (ptr != NULL) {
+                        aResponse.status = atoi(&ptr[9]);
+                    }
                     
-                    memset(&buffer[0], 0, sizeof(buffer));
-                    bufferPosition = 0;
+                    buffer->clear();
                     inHeaders = false;
                     #ifdef LOGGING
                     Serial.print("\r\nHttpClient>\tEnd of HTTP Headers (");
@@ -225,11 +226,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 }
             }
 
-            // Check that received character fits in buffer before storing.
-            if (bufferPosition < sizeof(buffer)-1) {
-                buffer[bufferPosition] = c;
-            } else if ((bufferPosition == sizeof(buffer)-1)) {
-                buffer[bufferPosition] = '\0'; // Null-terminate buffer
+            if (!buffer->append(c)) {
                 client.stop();
                 error = true;
 
@@ -238,9 +235,7 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
                 #endif
                 break;
             }
-            bufferPosition++;
         }
-        // We don't need to null terminate the buffer since it was zeroed to start with, or null terminated when it reached capacity.
 
         #ifdef LOGGING
         if (bytes) {
@@ -281,5 +276,6 @@ void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, h
         return;
     }
     // Return the entire message body from bodyPos+4 till end.
-    aResponse.body = buffer;
+    aResponse.body = buffer->getBuffer();
+    buffer->clear();
 }

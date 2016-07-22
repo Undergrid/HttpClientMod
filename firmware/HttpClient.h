@@ -6,6 +6,8 @@
 #include "spark_wiring_tcpclient.h"
 #include "spark_wiring_usbserial.h"
 
+#include "Buffer.h"
+
 /**
  * Defines for the HTTP methods.
  */
@@ -60,12 +62,11 @@ public:
     * Public references to variables.
     */
     TCPClient client;
-    char buffer[1024];
 
     /**
     * Constructor.
     */
-    HttpClient(void);
+    HttpClient(Buffer *buffer);
 
     /**
     * HTTP request methods.
@@ -124,6 +125,8 @@ private:
     void sendHeader(const char* aHeaderName, const char* aHeaderValue);
     void sendHeader(const char* aHeaderName, const int aHeaderValue);
     void sendHeader(const char* aHeaderName);
+    
+    Buffer *buffer;
 };
 
 #endif /* __HTTP_CLIENT_H_ */
