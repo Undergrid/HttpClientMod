@@ -13,7 +13,9 @@ There are a couple other options that are probably better suited if you are usin
 * Declaring the variables.
 */
 unsigned int nextTime = 0;    // Next time to contact the server
-HttpClient http;
+
+StaticBuffer<1024> buffer;
+HttpClient http(&buffer);
 
 // Headers currently need to be set at init, useful for API keys etc.
 http_header_t headers[] = {
@@ -56,5 +58,35 @@ void loop() {
     nextTime = millis() + 10000;
 }
 
+
+```
+
+### Using a Dynamic Buffer
+
+```cpp
+
+DynamicBuffer dynamicBuffer(1024, 256, 2048);
+HttpClient http(&dynamicBuffer);
+
+```
+
+### Processing the character stream as it's received.
+
+```cpp
+
+class StreamProcessor : public Buffer {
+    public:
+        bool append(const char c) {
+            // Process the character here...
+            return true;
+        };
+        
+        void clear() {};
+        bool isFull() { return false; };
+		const char* const getBuffer() const { return NULL; };
+}
+
+StreamProcessor streamProcessor;
+HttpClient http(&streamProcessor);
 
 ```
