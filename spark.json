@@ -1,7 +1,7 @@
 {
-  "name": "HttpClient",
-  "author": "Nils Mattisson <nils.mattisson@gmail.com>",
+  "name": "HttpClientMod",
+  "author": "Nick Thomson <particledev@undergrid.org.uk>",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "A work in progress Http Client Library for the Spark Core and Arduino."
 }

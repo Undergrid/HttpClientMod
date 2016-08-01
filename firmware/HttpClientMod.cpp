@@ -1,11 +1,11 @@
-#include "HttpClient.h"
+#include "HttpClientMod.h"
 
 static const uint16_t TIMEOUT = 5000; // Allow maximum 5s between data packets.
 
 /**
 * Constructor.
 */
-HttpClient::HttpClient(Buffer *userBuffer)
+HttpClientMod::HttpClientMod(Buffer *userBuffer)
 {
     buffer = userBuffer;
 }
@@ -13,7 +13,7 @@ HttpClient::HttpClient(Buffer *userBuffer)
 /**
 * Method to send a header, should only be called from within the class.
 */
-void HttpClient::sendHeader(const char* aHeaderName, const char* aHeaderValue)
+void HttpClientMod::sendHeader(const char* aHeaderName, const char* aHeaderValue)
 {
     client.print(aHeaderName);
     client.print(": ");
@@ -26,7 +26,7 @@ void HttpClient::sendHeader(const char* aHeaderName, const char* aHeaderValue)
     #endif
 }
 
-void HttpClient::sendHeader(const char* aHeaderName, const int aHeaderValue)
+void HttpClientMod::sendHeader(const char* aHeaderName, const int aHeaderValue)
 {
     client.print(aHeaderName);
     client.print(": ");
@@ -39,7 +39,7 @@ void HttpClient::sendHeader(const char* aHeaderName, const int aHeaderValue)
     #endif
 }
 
-void HttpClient::sendHeader(const char* aHeaderName)
+void HttpClientMod::sendHeader(const char* aHeaderName)
 {
     client.println(aHeaderName);
 
@@ -53,7 +53,7 @@ void HttpClient::sendHeader(const char* aHeaderName)
 * in the aResponse struct and set the headers and the options in the aRequest
 * struct.
 */
-void HttpClient::request(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[], const char* aHttpMethod)
+void HttpClientMod::request(http_request_t &aRequest, http_response_t &aResponse, http_header_t headers[], const char* aHttpMethod)
 {
     // If a proper response code isn't received it will be set to -1.
     aResponse.status = -1;

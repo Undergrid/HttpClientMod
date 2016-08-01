@@ -56,7 +56,7 @@ typedef struct
   String body;
 } http_response_t;
 
-class HttpClient {
+class HttpClientMod {
 public:
     /**
     * Public references to variables.
@@ -66,7 +66,7 @@ public:
     /**
     * Constructor.
     */
-    HttpClient(Buffer *buffer);
+    HttpClientMod(Buffer *buffer);
 
     /**
     * HTTP request methods.

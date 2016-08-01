@@ -1,5 +1,5 @@
 #include "application.h"
-#include "HttpClient/HttpClient.h"
+#include "HttpClientMod/HttpClientMod.h"
 
 /**
 * Declaring the variables.
@@ -7,7 +7,7 @@
 unsigned int nextTime = 0;    // Next time to contact the server
 
 StaticBuffer<1024> buffer;
-HttpClient http(&buffer);
+HttpClientMod http(&buffer);
 
 // Headers currently need to be set at init, useful for API keys etc.
 http_header_t headers[] = {
